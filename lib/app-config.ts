@@ -10,6 +10,5 @@ export const APP_CONFIG = {
     DEFAULT_CURRENCY: "USDC",
 
     // Paywall Settings
-    PAYWALL_TITLE: "Contact Creator (Demo)",
     PAYWALL_DESCRIPTION: "Message Submission (x402 Protected)",
 };

@@ -3,7 +3,7 @@ export interface PaywallConfig {
     creatorAddress: string;
     price: string; // e.g. "1.0"
     currency: string; // e.g. "USDC"
-    title: string;
+    email: string;
     description: string;
 }
 

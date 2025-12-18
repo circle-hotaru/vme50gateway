@@ -5,9 +5,9 @@ import { MOCK_PAYWALLS } from "@/lib/db";
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { creatorAddress, price, title, description } = body;
+        const { creatorAddress, price, email, description } = body;
 
-        if (!creatorAddress || !price) {
+        if (!creatorAddress || !price || !email) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
 
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
             creatorAddress,
             price: price || "1.0",
             currency: "USDC", // Default for MVP
-            title: title || "Contact Me",
+            email: email,
             description: description || "Pay to send me a message.",
         };
 
