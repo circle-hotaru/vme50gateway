@@ -1,9 +1,9 @@
-import { getDefaultConfig } from '@rainbow-me/rainbowkit';
-import { baseSepolia } from 'wagmi/chains';
+import { getDefaultConfig } from '@rainbow-me/rainbowkit'
+import { baseSepolia } from 'wagmi/chains'
 
 export const config = getDefaultConfig({
-    appName: 'x402 Gateway',
-    projectId: 'YOUR_PROJECT_ID', // TODO: Get a project ID from WalletConnect
-    chains: [baseSepolia],
-    ssr: true,
-});
+  appName: 'x402 Gateway',
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || '',
+  chains: [baseSepolia],
+  ssr: true,
+})
