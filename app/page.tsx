@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { ArrowRight, ShieldCheck, Zap, Coins } from "lucide-react";
+import Link from 'next/link'
+import { ArrowRight, ShieldCheck, Zap, Coins } from 'lucide-react'
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className="min-h-screen bg-black text-white selection:bg-blue-500 selection:text-white">
       <nav className="p-6 flex justify-between items-center max-w-7xl mx-auto">
@@ -10,10 +10,16 @@ export default function Home() {
           x402
         </div>
         <div className="flex gap-4">
-          <Link href="/dashboard" className="px-4 py-2 hover:text-gray-300 transition-colors">
+          <Link
+            href="/dashboard"
+            className="px-4 py-2 hover:text-gray-300 transition-colors"
+          >
             Log in
           </Link>
-          <Link href="/dashboard" className="px-4 py-2 bg-white text-black rounded-full font-medium hover:bg-gray-200 transition-colors">
+          <Link
+            href="/dashboard"
+            className="px-4 py-2 bg-white text-black rounded-full font-medium hover:bg-gray-200 transition-colors"
+          >
             Start Demo
           </Link>
         </div>
@@ -64,10 +70,18 @@ export default function Home() {
         </div>
       </main>
     </div>
-  );
+  )
 }
 
-function FeatureCard({ icon, title, desc }: { icon: any, title: string, desc: string }) {
+function FeatureCard({
+  icon,
+  title,
+  desc,
+}: {
+  icon: any
+  title: string
+  desc: string
+}) {
   return (
     <div className="p-8 bg-gray-900/50 border border-gray-800 rounded-2xl hover:bg-gray-900 transition-colors">
       <div className="mb-4 w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center">
@@ -76,5 +90,5 @@ function FeatureCard({ icon, title, desc }: { icon: any, title: string, desc: st
       <h3 className="text-xl font-bold mb-2">{title}</h3>
       <p className="text-gray-400 leading-relaxed">{desc}</p>
     </div>
-  );
+  )
 }

@@ -35,3 +35,43 @@ This project is a Next.js application designed to demonstrate the x402 concept (
 2.  **Public Page**: Open the generated `/c/[id]` link.
 3.  **Pay**: Click "Pay" to send Testnet ETH/USDC.
 4.  **Refund**: Go back to Dashboard -> Inbox -> Click "Refund" to return funds.
+
+## Supabase Setup (Links + Submissions)
+
+1) Environment
+
+Add these to your `.env.local` (service role key stays server-side only):
+
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+```
+
+2) Tables (run in Supabase SQL editor)
+
+```sql
+create table if not exists paywalls (
+  id uuid primary key default gen_random_uuid(),
+  creator_address text not null,
+  price numeric not null,
+  currency text not null,
+  email text not null,
+  description text,
+  created_at timestamptz default now()
+);
+
+create table if not exists submissions (
+  id uuid primary key default gen_random_uuid(),
+  paywall_id uuid references paywalls(id) on delete cascade,
+  name text,
+  contact text not null,
+  message text not null,
+  tx_hash text,
+  wallet_address text,
+  paid boolean default false,
+  created_at timestamptz default now()
+);
+```
+
+If you enable RLS, keep policies simple because server routes use the service role key (bypasses RLS). Clients never see the service key.

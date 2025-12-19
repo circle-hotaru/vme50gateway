@@ -5,14 +5,18 @@ export interface PaywallConfig {
     currency: string; // e.g. "USDC"
     email: string;
     description: string;
+    createdAt?: string;
 }
 
 export interface Submission {
     id: string;
     paywallId: string;
-    content: string;
+    name?: string;
+    message: string;
     contact: string;
-    txHash: string;
+    txHash?: string;
+    walletAddress?: string;
+    paid?: boolean;
     timestamp: string;
 }
 

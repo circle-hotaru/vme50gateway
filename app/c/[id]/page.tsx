@@ -1,7 +1,7 @@
 import { PaywallForm } from '@/components/paywall-form'
 import { PaywallConfig } from '@/types'
-import { MOCK_PAYWALLS } from '@/lib/db'
 import { APP_CONFIG } from '@/lib/app-config'
+import { getPaywallById } from '@/lib/db'
 
 // This is a server component
 export default async function GatewayPage({
@@ -10,8 +10,7 @@ export default async function GatewayPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  // Lookup in Mock DB
-  const foundConfig = MOCK_PAYWALLS[id]
+  const foundConfig = await getPaywallById(id)
 
   // Note: If server restarted, memory is cleared. Fallback to a SAFE address.
   // Use a Random Valid Address or user's specific address if connected?
