@@ -134,7 +134,12 @@ export async function POST(req: NextRequest) {
 
           if (submissionId && transaction && payer) {
             // Update the submission with payment information
-            await updateSubmissionPaymentInfo(submissionId, payer, transaction)
+            // Normalize address to lowercase for consistent querying
+            await updateSubmissionPaymentInfo(
+              submissionId,
+              payer.toLowerCase(),
+              transaction
+            )
           }
 
           // Return new response with the same body

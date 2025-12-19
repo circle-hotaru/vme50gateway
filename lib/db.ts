@@ -100,7 +100,8 @@ export async function createSubmission(input: {
       contact: input.contact,
       message: input.message,
       tx_hash: input.txHash,
-      wallet_address: input.walletAddress,
+      // Normalize wallet address to lowercase for consistent storage
+      wallet_address: input.walletAddress?.toLowerCase(),
       paid: true,
     })
     .select()
@@ -122,7 +123,8 @@ export async function updateSubmissionPaymentInfo(
   const { error } = await supabase
     .from('submissions')
     .update({
-      wallet_address: walletAddress,
+      // Normalize wallet address to lowercase for consistent storage
+      wallet_address: walletAddress.toLowerCase(),
       tx_hash: txHash,
     })
     .eq('id', submissionId)
@@ -137,6 +139,39 @@ export async function listSubmissions(): Promise<Submission[]> {
   const { data, error } = await supabase
     .from('submissions')
     .select('*')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    throw error
+  }
+
+  return (data || []).map(mapSubmission)
+}
+
+export async function listSubmissionsByWallet(
+  walletAddress: string
+): Promise<Submission[]> {
+  const supabase = createAdminClient()
+
+  // Normalize address to lowercase for consistent matching
+  const normalizedAddress = walletAddress.toLowerCase()
+
+  // Get submissions with joined paywall info
+  const { data, error } = await supabase
+    .from('submissions')
+    .select(
+      `
+      *,
+      paywalls(
+        id,
+        title,
+        price,
+        currency,
+        creator_address
+      )
+    `
+    )
+    .eq('wallet_address', normalizedAddress)
     .order('created_at', { ascending: false })
 
   if (error) {
