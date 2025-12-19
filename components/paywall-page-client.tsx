@@ -26,9 +26,6 @@ export function PaywallPageClient({ config }: PaywallPageClientProps) {
       {/* Main Content */}
       <div className="flex flex-col items-center justify-center px-4 py-12">
         <div className="mb-8 text-center space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-            {config.email}
-          </h1>
           <p className="text-gray-500 max-w-sm mx-auto">{config.description}</p>
         </div>
 
@@ -42,4 +39,3 @@ export function PaywallPageClient({ config }: PaywallPageClientProps) {
     </div>
   )
 }
-
