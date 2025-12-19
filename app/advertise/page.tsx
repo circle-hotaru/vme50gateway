@@ -164,10 +164,7 @@ export default function AdvertisePage() {
                     : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
                 }`}
               >
-                <Zap
-                  size={16}
-                  className="inline-block mr-2 mb-0.5"
-                />
+                <Zap size={16} className="inline-block mr-2 mb-0.5" />
                 所有链接
                 {activeTab === 'all' && (
                   <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-cyan-500 shadow-[0_0_8px_rgba(0,255,255,0.5)]" />
@@ -185,14 +182,11 @@ export default function AdvertisePage() {
                   activeTab === 'history'
                     ? 'text-cyan-600 dark:text-cyan-400'
                     : isConnected
-                      ? 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
-                      : 'text-zinc-300 dark:text-zinc-700 cursor-not-allowed'
+                    ? 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300'
+                    : 'text-zinc-300 dark:text-zinc-700 cursor-not-allowed'
                 }`}
               >
-                <History
-                  size={16}
-                  className="inline-block mr-2 mb-0.5"
-                />
+                <History size={16} className="inline-block mr-2 mb-0.5" />
                 我的历史
                 {isConnected && mySubmissions.length > 0 && (
                   <span className="ml-2 px-2 py-0.5 bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 rounded-full text-xs">
@@ -282,7 +276,7 @@ export default function AdvertisePage() {
                             </span>
                             {submission.txHash && (
                               <a
-                                href={`https://basescan.org/tx/${submission.txHash}`}
+                                href={`https://sepolia.basescan.org/tx/${submission.txHash}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-1 text-cyan-600 dark:text-cyan-400 hover:underline"
@@ -315,167 +309,171 @@ export default function AdvertisePage() {
             <>
               {/* Stats Bar */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <div className="bg-white dark:bg-zinc-900 border border-cyan-500/20 p-6 rounded-lg">
-              <div className="flex items-center gap-3 mb-2">
-                <Zap size={20} className="text-cyan-500" />
-                <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                  总链接数
-                </span>
-              </div>
-              <div className="text-3xl font-black text-slate-900 dark:text-white">
-                {paywalls.length}
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-zinc-900 border border-cyan-500/20 p-6 rounded-lg">
-              <div className="flex items-center gap-3 mb-2">
-                <TrendingUp size={20} className="text-green-500" />
-                <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                  平均响应率
-                </span>
-              </div>
-              <div className="text-3xl font-black text-slate-900 dark:text-white">
-                {paywalls.length > 0
-                  ? Math.floor(
-                      paywalls.reduce((acc, p) => acc + p.responseRate, 0) /
-                        paywalls.length
-                    )
-                  : 0}
-                %
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-zinc-900 border border-cyan-500/20 p-6 rounded-lg">
-              <div className="flex items-center gap-3 mb-2">
-                <DollarSign size={20} className="text-yellow-500" />
-                <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                  价格范围
-                </span>
-              </div>
-              <div className="text-3xl font-black text-slate-900 dark:text-white">
-                {paywalls.length > 0
-                  ? `$${Math.min(
-                      ...paywalls.map((p) => parseFloat(p.price))
-                    )}-${Math.max(...paywalls.map((p) => parseFloat(p.price)))}`
-                  : '$0'}
-              </div>
-            </div>
-          </div>
-
-          {/* Loading State */}
-          {loading && (
-            <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
-            </div>
-          )}
-
-          {/* Error State */}
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-6 text-center">
-              <p className="text-red-500 font-bold">{error}</p>
-            </div>
-          )}
-
-          {/* Paywall List */}
-          {!loading && !error && (
-            <div className="grid grid-cols-1 gap-4">
-              {paywalls.length === 0 ? (
-                <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-12 text-center">
-                  <p className="text-zinc-500 dark:text-zinc-400 text-lg">
-                    暂无可投放的链接
-                  </p>
-                </div>
-              ) : (
-                paywalls.map((paywall) => (
-                  <div
-                    key={paywall.id}
-                    className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-cyan-500/50 transition-all rounded-lg p-6 group"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      {/* Left: Title and ID */}
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white transition-colors">
-                          {paywall.title || paywall.id}
-                        </h3>
-                        {paywall.title && (
-                          <p className="text-xs font-mono text-zinc-400 dark:text-zinc-600 mb-3">
-                            ID: {paywall.id}
-                          </p>
-                        )}
-                        {paywall.description && (
-                          <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
-                            {paywall.description}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Right: Stats */}
-                      <div className="flex items-start gap-6">
-                        {/* Response Rate */}
-                        <div
-                          className={`border rounded-lg px-4 py-3 text-center w-[120px] h-[96px] flex flex-col justify-between ${getResponseRateBg(
-                            paywall.responseRate
-                          )}`}
-                        >
-                          <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                            响应率
-                          </div>
-                          <div
-                            className={`text-2xl font-black ${getResponseRateColor(
-                              paywall.responseRate
-                            )}`}
-                          >
-                            {paywall.responseRate}%
-                          </div>
-                          <div className="text-xs text-transparent">&nbsp;</div>
-                        </div>
-
-                        {/* Price */}
-                        <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg px-4 py-3 text-center w-[120px] h-[96px] flex flex-col justify-between">
-                          <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
-                            价格
-                          </div>
-                          <div className="text-2xl font-black text-cyan-600 dark:text-cyan-400">
-                            ${paywall.price}
-                          </div>
-                          <div className="text-xs text-zinc-500 dark:text-zinc-400">
-                            {paywall.currency}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Footer */}
-                    <div className="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                          创建者: {paywall.creatorAddress.slice(0, 6)}...
-                          {paywall.creatorAddress.slice(-4)}
-                        </span>
-                        {paywall.createdAt && (
-                          <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                            创建时间:{' '}
-                            {new Date(paywall.createdAt).toLocaleDateString(
-                              'zh-CN'
-                            )}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Action Button */}
-                      <button
-                        onClick={() => router.push(`/c/${paywall.id}`)}
-                        className="cyber-button px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-sm font-black text-sm uppercase tracking-widest border-b-4 border-cyan-700 active:translate-y-1 active:border-b-0 transition-all flex items-center gap-2"
-                      >
-                        立即投放
-                        <ArrowRight size={16} />
-                      </button>
-                    </div>
+                <div className="bg-white dark:bg-zinc-900 border border-cyan-500/20 p-6 rounded-lg">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Zap size={20} className="text-cyan-500" />
+                    <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                      总链接数
+                    </span>
                   </div>
-                ))
+                  <div className="text-3xl font-black text-slate-900 dark:text-white">
+                    {paywalls.length}
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-zinc-900 border border-cyan-500/20 p-6 rounded-lg">
+                  <div className="flex items-center gap-3 mb-2">
+                    <TrendingUp size={20} className="text-green-500" />
+                    <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                      平均响应率
+                    </span>
+                  </div>
+                  <div className="text-3xl font-black text-slate-900 dark:text-white">
+                    {paywalls.length > 0
+                      ? Math.floor(
+                          paywalls.reduce((acc, p) => acc + p.responseRate, 0) /
+                            paywalls.length
+                        )
+                      : 0}
+                    %
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-zinc-900 border border-cyan-500/20 p-6 rounded-lg">
+                  <div className="flex items-center gap-3 mb-2">
+                    <DollarSign size={20} className="text-yellow-500" />
+                    <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                      价格范围
+                    </span>
+                  </div>
+                  <div className="text-3xl font-black text-slate-900 dark:text-white">
+                    {paywalls.length > 0
+                      ? `$${Math.min(
+                          ...paywalls.map((p) => parseFloat(p.price))
+                        )}-${Math.max(
+                          ...paywalls.map((p) => parseFloat(p.price))
+                        )}`
+                      : '$0'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Loading State */}
+              {loading && (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500"></div>
+                </div>
               )}
-            </div>
-          )}
+
+              {/* Error State */}
+              {error && (
+                <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-6 text-center">
+                  <p className="text-red-500 font-bold">{error}</p>
+                </div>
+              )}
+
+              {/* Paywall List */}
+              {!loading && !error && (
+                <div className="grid grid-cols-1 gap-4">
+                  {paywalls.length === 0 ? (
+                    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-12 text-center">
+                      <p className="text-zinc-500 dark:text-zinc-400 text-lg">
+                        暂无可投放的链接
+                      </p>
+                    </div>
+                  ) : (
+                    paywalls.map((paywall) => (
+                      <div
+                        key={paywall.id}
+                        className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-cyan-500/50 transition-all rounded-lg p-6 group"
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          {/* Left: Title and ID */}
+                          <div className="flex-1">
+                            <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white transition-colors">
+                              {paywall.title || paywall.id}
+                            </h3>
+                            {paywall.title && (
+                              <p className="text-xs font-mono text-zinc-400 dark:text-zinc-600 mb-3">
+                                ID: {paywall.id}
+                              </p>
+                            )}
+                            {paywall.description && (
+                              <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">
+                                {paywall.description}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Right: Stats */}
+                          <div className="flex items-start gap-6">
+                            {/* Response Rate */}
+                            <div
+                              className={`border rounded-lg px-4 py-3 text-center w-[120px] h-[96px] flex flex-col justify-between ${getResponseRateBg(
+                                paywall.responseRate
+                              )}`}
+                            >
+                              <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                                响应率
+                              </div>
+                              <div
+                                className={`text-2xl font-black ${getResponseRateColor(
+                                  paywall.responseRate
+                                )}`}
+                              >
+                                {paywall.responseRate}%
+                              </div>
+                              <div className="text-xs text-transparent">
+                                &nbsp;
+                              </div>
+                            </div>
+
+                            {/* Price */}
+                            <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg px-4 py-3 text-center w-[120px] h-[96px] flex flex-col justify-between">
+                              <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
+                                价格
+                              </div>
+                              <div className="text-2xl font-black text-cyan-600 dark:text-cyan-400">
+                                ${paywall.price}
+                              </div>
+                              <div className="text-xs text-zinc-500 dark:text-zinc-400">
+                                {paywall.currency}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+                          <div className="flex flex-col gap-1">
+                            <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                              创建者: {paywall.creatorAddress.slice(0, 6)}...
+                              {paywall.creatorAddress.slice(-4)}
+                            </span>
+                            {paywall.createdAt && (
+                              <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                创建时间:{' '}
+                                {new Date(paywall.createdAt).toLocaleDateString(
+                                  'zh-CN'
+                                )}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Action Button */}
+                          <button
+                            onClick={() => router.push(`/c/${paywall.id}`)}
+                            className="cyber-button px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-sm font-black text-sm uppercase tracking-widest border-b-4 border-cyan-700 active:translate-y-1 active:border-b-0 transition-all flex items-center gap-2"
+                          >
+                            立即投放
+                            <ArrowRight size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
             </>
           )}
         </div>
