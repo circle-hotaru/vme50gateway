@@ -60,7 +60,7 @@ export default function AdvertisePage() {
       <div className="h-1 bg-cyan-500 shadow-[0_0_15px_#00ffff] fixed top-0 left-0 right-0 z-50 opacity-40" />
 
       <nav className="fixed top-0 left-0 right-0 z-40 bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-cyan-500/20">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <button
             onClick={() => router.push('/')}
             className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors"
@@ -87,7 +87,7 @@ export default function AdvertisePage() {
 
       {/* Main Content */}
       <main className="pt-24 pb-12 px-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tighter text-slate-900 dark:text-white">
@@ -261,7 +261,7 @@ export default function AdvertisePage() {
 
       {/* Footer */}
       <footer className="border-t border-zinc-200 dark:border-zinc-900 bg-white dark:bg-[#020202] py-6 px-6">
-        <div className="max-w-7xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-4 mb-4">
             <div className="w-8 h-8 bg-cyan-600 text-white font-black flex items-center justify-center text-xl italic shadow-[0_0_10px_rgba(0,255,255,0.5)]">
               V

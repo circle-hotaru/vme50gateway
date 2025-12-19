@@ -258,13 +258,13 @@ export default function Home() {
                 onClick={() => router.push('/dashboard')}
                 className="cyber-button px-14 py-6 text-white dark:text-black rounded-none font-black text-xl uppercase tracking-widest border-b-8 border-cyan-800 active:translate-y-2 active:border-b-0 heading-font"
               >
-                {user.isConnected ? 'ENTER_COMMAND_CENTER' : 'DEPLOY_SHIELD'}
+                DEPLOY_SHIELD
               </button>
               <button
                 onClick={() => router.push('/advertise')}
                 className="px-14 py-6 bg-transparent border-4 border-cyan-500 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500 hover:text-white dark:hover:text-black rounded-none font-black text-xl uppercase tracking-widest transition-all active:translate-y-2 heading-font"
               >
-                投流中心
+                ADVERTISE HUB
               </button>
             </div>
           </div>
