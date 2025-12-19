@@ -113,6 +113,25 @@ export async function createSubmission(input: {
   return mapSubmission(data)
 }
 
+export async function updateSubmissionPaymentInfo(
+  submissionId: string,
+  walletAddress: string,
+  txHash: string
+): Promise<void> {
+  const supabase = createAdminClient()
+  const { error } = await supabase
+    .from('submissions')
+    .update({
+      wallet_address: walletAddress,
+      tx_hash: txHash,
+    })
+    .eq('id', submissionId)
+
+  if (error) {
+    throw error
+  }
+}
+
 export async function listSubmissions(): Promise<Submission[]> {
   const supabase = createAdminClient()
   const { data, error } = await supabase

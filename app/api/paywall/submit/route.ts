@@ -1,7 +1,12 @@
 import { NextResponse, NextRequest } from 'next/server'
 import { withX402 } from 'x402-next'
 import { APP_CONFIG } from '@/lib/app-config'
-import { createSubmission, listSubmissions, getPaywallById } from '@/lib/db'
+import {
+  createSubmission,
+  listSubmissions,
+  getPaywallById,
+  updateSubmissionPaymentInfo,
+} from '@/lib/db'
 
 // GET can be unprotected for the dashboard inbox
 export async function GET() {
@@ -34,14 +39,14 @@ const createHandler = (bodyData: any) => async (_req: NextRequest) => {
       )
     }
 
+    // Create submission without payment info first
+    // Payment info will be added after settlement
     const submission = await createSubmission({
       paywallId,
       name,
       contact,
       message,
     })
-
-    console.log('New Submission Verified (via x402-next):', submission.id)
 
     return NextResponse.json({
       success: true,
@@ -108,7 +113,40 @@ export async function POST(req: NextRequest) {
       }
     ) as (req: NextRequest) => Promise<NextResponse>
 
-    return protectedHandler(newReq)
+    // Execute the protected handler
+    const response = await protectedHandler(newReq)
+
+    // After successful payment settlement, extract payment info from response headers
+    // and update the submission record
+    if (response.ok) {
+      try {
+        // x402 adds payment settlement info in X-PAYMENT-RESPONSE header (base64 encoded)
+        const paymentResponseHeader = response.headers.get('x-payment-response')
+        if (paymentResponseHeader) {
+          const paymentResponse = JSON.parse(
+            Buffer.from(paymentResponseHeader, 'base64').toString('utf-8')
+          )
+
+          // Extract transaction hash and payer address from settlement
+          const { transaction, payer } = paymentResponse
+          const responseBody = await response.json()
+          const submissionId = responseBody.submissionId
+
+          if (submissionId && transaction && payer) {
+            // Update the submission with payment information
+            await updateSubmissionPaymentInfo(submissionId, payer, transaction)
+          }
+
+          // Return new response with the same body
+          return NextResponse.json(responseBody)
+        }
+      } catch (error) {
+        console.error('Failed to extract/save payment info:', error)
+        // Don't fail the request if payment info extraction fails
+      }
+    }
+
+    return response
   } catch (error) {
     console.error('Error in POST handler:', error)
     return NextResponse.json(
