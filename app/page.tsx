@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { Wallet, LogOut, Shield, Globe, Github, Server, Activity, ArrowUpRight, Zap, Database, Lock, AlertTriangle, Terminal, ShieldAlert, LayoutDashboard, Sun, Moon } from 'lucide-react';
 import { UserState, WalletOption, ChainType, IncomingMessage, PaymentLink } from '@/types';
 
@@ -61,6 +62,7 @@ const ThreatPacket: React.FC<{ index: number }> = ({ index }) => {
 };
 
 export default function Home() {
+  const router = useRouter();
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<UserState>({
@@ -205,7 +207,7 @@ export default function Home() {
               {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
             </button>
 
-             {user.isConnected ? (
+             {user.isConnected && (
               <div className="flex items-center gap-3">
                 <button 
                   onClick={() => setView(view === 'dashboard' ? 'landing' : 'dashboard')}
@@ -218,13 +220,6 @@ export default function Home() {
                   <LogOut size={16} />
                 </button>
               </div>
-            ) : (
-              <button 
-                onClick={() => setIsModalOpen(true)}
-                className="px-8 py-2 font-black text-[11px] uppercase tracking-[0.2em] bg-cyan-600 hover:bg-cyan-500 text-white transition-colors"
-              >
-                DEPLOY_SHIELD
-              </button>
             )}
           </div>
         </div>
@@ -272,7 +267,7 @@ export default function Home() {
 
                 <div className="flex flex-wrap justify-center gap-6">
                   <button 
-                    onClick={() => user.isConnected ? setView('dashboard') : setIsModalOpen(true)}
+                    onClick={() => router.push('/dashboard')}
                     className="cyber-button px-14 py-6 text-white dark:text-black rounded-none font-black text-xl uppercase tracking-widest border-b-8 border-cyan-800 active:translate-y-2 active:border-b-0 heading-font"
                   >
                     {user.isConnected ? 'ENTER_COMMAND_CENTER' : 'DEPLOY_SHIELD'}
