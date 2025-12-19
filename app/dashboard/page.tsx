@@ -10,6 +10,7 @@ import {
   Inbox,
   Mail,
   MailOpen,
+  Check,
 } from 'lucide-react'
 import { useAccount } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
@@ -35,6 +36,7 @@ export default function DashboardPage() {
   const [totalReceived, setTotalReceived] = useState<Record<string, string>>({})
   const [isLoadingInbox, setIsLoadingInbox] = useState(false)
   const [activeTab, setActiveTab] = useState<'links' | 'inbox'>('links')
+  const [copiedId, setCopiedId] = useState<string | null>(null)
 
   const fetchLinks = useCallback(async () => {
     if (!address) return
@@ -361,12 +363,24 @@ export default function DashboardPage() {
                               navigator.clipboard.writeText(
                                 `${window.location.origin}/c/${link.id}`
                               )
-                              alert('Copied to clipboard!')
+                              setCopiedId(link.id)
+                              setTimeout(() => setCopiedId(null), 2000)
                             }}
-                            className="text-gray-400 hover:text-black transition-colors p-1 hover:bg-gray-200 rounded"
+                            className={`transition-all duration-200 p-1 rounded flex items-center gap-1 ${
+                              copiedId === link.id
+                                ? 'text-green-600 bg-green-50'
+                                : 'text-gray-400 hover:text-black hover:bg-gray-200'
+                            }`}
                             title="Copy link"
                           >
-                            <Copy size={16} />
+                            {copiedId === link.id ? (
+                              <>
+                                <span className="text-xs font-bold">复制成功</span>
+                                <Check size={14} />
+                              </>
+                            ) : (
+                              <Copy size={16} />
+                            )}
                           </button>
                         </div>
                       </div>
