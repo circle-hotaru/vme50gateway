@@ -97,7 +97,7 @@ export default function DashboardPage() {
           creatorAddress: address,
           ...formData,
           payToAddress: formData.payToAddress || address,
-          price: APP_CONFIG.DEFAULT_PRICE,
+          price: Number(formData.price),
         }),
       })
       const data = await res.json()
@@ -106,7 +106,7 @@ export default function DashboardPage() {
         setFormData({
           title: '',
           email: '',
-          payToAddress: '',
+          payToAddress: address || '',
           price: APP_CONFIG.DEFAULT_PRICE,
           description: '',
         })
@@ -270,13 +270,27 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Price (Fixed for Demo)
+                    Price (USDC)
                   </label>
                   <input
-                    disabled
+                    required
                     type="number"
+                    min="0"
+                    step="any"
+                    placeholder="0.01"
                     value={formData.price}
-                    className="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none bg-gray-100 text-gray-500 cursor-not-allowed"
+                    onChange={(e) => {
+                      const value = e.target.value
+                      // Only allow valid numbers
+                      if (value === '' || !isNaN(Number(value))) {
+                        // Check decimal places (max 6 for USDC)
+                        const decimalPart = value.split('.')[1]
+                        if (!decimalPart || decimalPart.length <= 6) {
+                          setFormData({ ...formData, price: value })
+                        }
+                      }
+                    }}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
                 <button
