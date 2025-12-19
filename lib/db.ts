@@ -23,6 +23,10 @@ const mapSubmission = (row: any): Submission => ({
   walletAddress: row.wallet_address,
   paid: row.paid,
   timestamp: row.created_at,
+  // Include paywall info if available (from joins)
+  paywallTitle: row.paywalls?.title || row.paywall_title,
+  paywallPrice: row.paywalls?.price || row.paywall_price,
+  paywallCurrency: row.paywalls?.currency || row.paywall_currency,
 })
 
 export async function createPaywall(input: {
@@ -145,27 +149,22 @@ export async function listSubmissionsByCreator(
 ): Promise<Submission[]> {
   const supabase = createAdminClient()
 
-  // First get all paywalls created by this creator
-  const { data: paywalls, error: paywallError } = await supabase
-    .from('paywalls')
-    .select('id')
-    .eq('creator_address', creatorAddress)
-
-  if (paywallError) {
-    throw paywallError
-  }
-
-  if (!paywalls || paywalls.length === 0) {
-    return []
-  }
-
-  const paywallIds = paywalls.map((p) => p.id)
-
-  // Then get all submissions for those paywalls
+  // Get submissions with joined paywall info
   const { data, error } = await supabase
     .from('submissions')
-    .select('*')
-    .in('paywall_id', paywallIds)
+    .select(
+      `
+      *,
+      paywalls!inner(
+        id,
+        title,
+        price,
+        currency,
+        creator_address
+      )
+    `
+    )
+    .eq('paywalls.creator_address', creatorAddress)
     .order('created_at', { ascending: false })
 
   if (error) {

@@ -412,6 +412,28 @@ export default function DashboardPage() {
                             <p className="text-sm text-gray-600">
                               {submission.contact}
                             </p>
+                            {/* Link info */}
+                            <div className="flex items-center gap-2 mt-2">
+                              <button
+                                onClick={() => {
+                                  const fullUrl = `${window.location.origin}/c/${submission.paywallId}`
+                                  navigator.clipboard.writeText(fullUrl)
+                                  alert('Link copied to clipboard!')
+                                }}
+                                className="text-gray-400 hover:text-blue-600 transition-colors cursor-pointer"
+                                title="Click to copy link"
+                              >
+                                <LinkIcon size={14} />
+                              </button>
+                              <span className="text-sm text-gray-600">
+                                {submission.paywallTitle ||
+                                  submission.paywallId}
+                              </span>
+                              <span className="text-sm font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded">
+                                {submission.paywallPrice}{' '}
+                                {submission.paywallCurrency}
+                              </span>
+                            </div>
                           </div>
                         </div>
                         <div className="text-right">

@@ -20,6 +20,10 @@ export interface Submission {
     walletAddress?: string;
     paid?: boolean;
     timestamp: string;
+    // Joined from paywalls table
+    paywallTitle?: string;
+    paywallPrice?: string;
+    paywallCurrency?: string;
 }
 
 export interface ApiResponse<T = any> {
