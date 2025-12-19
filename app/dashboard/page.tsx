@@ -22,7 +22,9 @@ export default function DashboardPage() {
 
   const [createdLinks, setCreatedLinks] = useState<PaywallConfig[]>([])
   const [formData, setFormData] = useState({
+    title: '',
     email: '',
+    payToAddress: '',
     price: APP_CONFIG.DEFAULT_PRICE,
     description: '',
   })
@@ -72,9 +74,12 @@ export default function DashboardPage() {
     if (address) {
       fetchLinks()
       fetchInbox()
+      // Set default pay-to address to current wallet
+      setFormData((prev) => ({ ...prev, payToAddress: address }))
     } else {
       setCreatedLinks([])
       setInbox([])
+      setFormData((prev) => ({ ...prev, payToAddress: '' }))
     }
   }, [address, fetchLinks, fetchInbox])
 
@@ -89,6 +94,7 @@ export default function DashboardPage() {
         body: JSON.stringify({
           creatorAddress: address,
           ...formData,
+          payToAddress: formData.payToAddress || address,
           price: APP_CONFIG.DEFAULT_PRICE,
         }),
       })
@@ -96,7 +102,9 @@ export default function DashboardPage() {
       if (data.success) {
         setCreatedLinks([data.data, ...createdLinks])
         setFormData({
+          title: '',
           email: '',
+          payToAddress: '',
           price: APP_CONFIG.DEFAULT_PRICE,
           description: '',
         })
@@ -207,6 +215,24 @@ export default function DashboardPage() {
               >
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Link Title
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g., Twitter DMs, Consulting, Speaking"
+                    value={formData.title}
+                    onChange={(e) =>
+                      setFormData({ ...formData, title: e.target.value })
+                    }
+                    className="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Optional: Name this link to remember where you&apos;ll use
+                    it
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                     Contact Email
                   </label>
                   <input
@@ -219,6 +245,26 @@ export default function DashboardPage() {
                     }
                     className="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Pay-To Address
+                  </label>
+                  <input
+                    type="text"
+                    placeholder={address || '0x...'}
+                    value={formData.payToAddress}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        payToAddress: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Defaults to your current wallet address if empty
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -269,8 +315,13 @@ export default function DashboardPage() {
                             className="text-left flex-1 hover:opacity-80 transition-opacity"
                           >
                             <h3 className="font-bold text-lg hover:text-blue-600 transition-colors">
-                              {link.email}
+                              {link.title || link.email}
                             </h3>
+                            {link.title && (
+                              <p className="text-sm text-gray-600 mt-0.5">
+                                {link.email}
+                              </p>
+                            )}
                             <p className="text-sm text-gray-500">
                               {link.price} {link.currency}
                             </p>

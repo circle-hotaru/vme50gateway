@@ -4,6 +4,8 @@ import { PaywallConfig, Submission } from '@/types'
 const mapPaywall = (row: any): PaywallConfig => ({
   id: row.id,
   creatorAddress: row.creator_address,
+  payToAddress: row.pay_to_address,
+  title: row.title,
   price: row.price,
   currency: row.currency,
   email: row.email,
@@ -26,6 +28,8 @@ const mapSubmission = (row: any): Submission => ({
 export async function createPaywall(input: {
   id?: string
   creatorAddress: string
+  payToAddress?: string
+  title?: string
   price: string
   currency?: string
   email: string
@@ -38,6 +42,8 @@ export async function createPaywall(input: {
     .insert({
       id,
       creator_address: input.creatorAddress,
+      pay_to_address: input.payToAddress || input.creatorAddress,
+      title: input.title || '',
       price: input.price,
       currency: input.currency || 'USDC',
       email: input.email,

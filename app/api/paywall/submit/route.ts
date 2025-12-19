@@ -92,10 +92,12 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(body),
     })
 
-    // Use withX402 dynamically with the correct creator address
+    // Use withX402 dynamically with the pay-to address (defaults to creator address)
+    const payToAddress =
+      paywallConfig.payToAddress || paywallConfig.creatorAddress
     const protectedHandler = withX402(
       handler as unknown as (req: NextRequest) => Promise<NextResponse>,
-      paywallConfig.creatorAddress as `0x${string}`,
+      payToAddress as `0x${string}`,
       {
         price: `$${paywallConfig.price}`,
         network: APP_CONFIG.NETWORK,

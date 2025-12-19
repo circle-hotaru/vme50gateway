@@ -9,7 +9,11 @@ interface LinkDetailModalProps {
   onClose: () => void
 }
 
-export function LinkDetailModal({ link, isOpen, onClose }: LinkDetailModalProps) {
+export function LinkDetailModal({
+  link,
+  isOpen,
+  onClose,
+}: LinkDetailModalProps) {
   if (!isOpen) return null
 
   return (
@@ -24,7 +28,9 @@ export function LinkDetailModal({ link, isOpen, onClose }: LinkDetailModalProps)
         {/* Header */}
         <div className="flex items-start justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Link Details</h2>
+            <h2 className="text-2xl font-bold text-gray-900">
+              {link.title || 'Link Details'}
+            </h2>
             <p className="text-sm text-gray-500 mt-1">
               Created {new Date(link.createdAt || '').toLocaleDateString()}
             </p>
@@ -39,21 +45,34 @@ export function LinkDetailModal({ link, isOpen, onClose }: LinkDetailModalProps)
 
         {/* Content */}
         <div className="space-y-4">
-          {/* Payment Address */}
+          {/* Pay-To Address */}
           <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-100">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <Wallet size={16} className="text-white" />
               </div>
-              <span className="font-semibold text-gray-900">Payment Address</span>
+              <span className="font-semibold text-gray-900">
+                Pay-To Address
+              </span>
             </div>
             <div className="bg-white p-3 rounded-lg border border-blue-100">
               <p className="text-sm font-mono text-gray-700 break-all">
-                {link.creatorAddress}
+                {link.payToAddress || link.creatorAddress}
               </p>
             </div>
+            {link.payToAddress && link.payToAddress !== link.creatorAddress && (
+              <div className="mt-2 bg-white/60 p-2 rounded-lg">
+                <p className="text-xs text-gray-600">
+                  <span className="font-medium">Creator Address:</span>
+                </p>
+                <p className="text-xs font-mono text-gray-600 break-all mt-1">
+                  {link.creatorAddress}
+                </p>
+              </div>
+            )}
             <div className="mt-2 text-sm text-gray-600">
-              <span className="font-medium">Price:</span> {link.price} {link.currency}
+              <span className="font-medium">Price:</span> {link.price}{' '}
+              {link.currency}
             </div>
           </div>
 
@@ -99,4 +118,3 @@ export function LinkDetailModal({ link, isOpen, onClose }: LinkDetailModalProps)
     </div>
   )
 }
-

@@ -5,7 +5,8 @@ import { createPaywall } from '@/lib/db'
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { creatorAddress, price, email, description } = body
+    const { creatorAddress, payToAddress, title, price, email, description } =
+      body
 
     if (!creatorAddress || !price || !email) {
       return NextResponse.json(
@@ -16,6 +17,8 @@ export async function POST(req: Request) {
 
     const paywall = await createPaywall({
       creatorAddress,
+      payToAddress: payToAddress || creatorAddress,
+      title,
       price: price || APP_CONFIG.DEFAULT_PRICE,
       currency: APP_CONFIG.DEFAULT_CURRENCY,
       email,

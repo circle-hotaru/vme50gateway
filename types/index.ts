@@ -1,6 +1,8 @@
 export interface PaywallConfig {
     id: string;
     creatorAddress: string;
+    payToAddress?: string; // Optional: defaults to creatorAddress if not set
+    title?: string; // Optional: link title/name for identification
     price: string; // e.g. "1.0"
     currency: string; // e.g. "USDC"
     email: string;
