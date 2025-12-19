@@ -32,6 +32,7 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [selectedLink, setSelectedLink] = useState<PaywallConfig | null>(null)
   const [inbox, setInbox] = useState<Submission[]>([])
+  const [totalReceived, setTotalReceived] = useState<Record<string, string>>({})
   const [isLoadingInbox, setIsLoadingInbox] = useState(false)
   const [activeTab, setActiveTab] = useState<'links' | 'inbox'>('links')
 
@@ -60,7 +61,8 @@ export default function DashboardPage() {
       const res = await fetch(`/api/paywall/inbox?creatorAddress=${address}`)
       const data = await res.json()
       if (data.success) {
-        setInbox(data.data)
+        setInbox(data.data.submissions || [])
+        setTotalReceived(data.data.totalReceived || {})
       }
     } catch (err) {
       console.error('Failed to fetch inbox:', err)
@@ -386,6 +388,27 @@ export default function DashboardPage() {
                 </span>
               )}
             </div>
+
+            {/* Total Received Summary */}
+            {Object.keys(totalReceived).length > 0 && (
+              <div className="bg-linear-to-br from-green-50 to-emerald-50 p-6 rounded-2xl border border-green-200">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Total Received
+                </h3>
+                <div className="flex flex-wrap gap-4">
+                  {Object.entries(totalReceived).map(([currency, amount]) => (
+                    <div key={currency} className="flex items-center gap-2">
+                      <span className="text-2xl font-bold text-green-600">
+                        {amount}
+                      </span>
+                      <span className="text-sm font-medium text-gray-600">
+                        {currency}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="space-y-4">
               {isLoadingInbox ? (

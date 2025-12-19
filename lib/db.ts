@@ -173,3 +173,52 @@ export async function listSubmissionsByCreator(
 
   return (data || []).map(mapSubmission)
 }
+
+export async function getTotalReceivedByCreator(
+  creatorAddress: string
+): Promise<Record<string, string>> {
+  const supabase = createAdminClient()
+
+  // Get all paid submissions with paywall info
+  const { data, error } = await supabase
+    .from('submissions')
+    .select(
+      `
+      paid,
+      paywalls!inner(
+        price,
+        currency,
+        creator_address
+      )
+    `
+    )
+    .eq('paywalls.creator_address', creatorAddress)
+    .eq('paid', true)
+
+  if (error) {
+    throw error
+  }
+
+  // Calculate total by currency
+  const totals: Record<string, number> = {}
+
+  for (const row of data || []) {
+    // Handle both single object and array cases
+    const paywall = Array.isArray(row.paywalls) ? row.paywalls[0] : row.paywalls
+    const currency = paywall?.currency || 'USDC'
+    const price = parseFloat(paywall?.price || '0')
+
+    if (!totals[currency]) {
+      totals[currency] = 0
+    }
+    totals[currency] += price
+  }
+
+  // Convert to string for consistent API response
+  const result: Record<string, string> = {}
+  for (const [currency, amount] of Object.entries(totals)) {
+    result[currency] = amount.toFixed(2)
+  }
+
+  return result
+}

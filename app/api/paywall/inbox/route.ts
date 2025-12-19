@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server'
-import { listSubmissionsByCreator } from '@/lib/db'
+import { listSubmissionsByCreator, getTotalReceivedByCreator } from '@/lib/db'
 
 export async function GET(req: NextRequest) {
   try {
@@ -13,8 +13,18 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    const submissions = await listSubmissionsByCreator(creatorAddress)
-    return NextResponse.json({ success: true, data: submissions })
+    const [submissions, totalReceived] = await Promise.all([
+      listSubmissionsByCreator(creatorAddress),
+      getTotalReceivedByCreator(creatorAddress),
+    ])
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        submissions,
+        totalReceived,
+      },
+    })
   } catch (error) {
     console.error('Failed to fetch inbox submissions:', error)
     return NextResponse.json(
@@ -23,4 +33,3 @@ export async function GET(req: NextRequest) {
     )
   }
 }
-
