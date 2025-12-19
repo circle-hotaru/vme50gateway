@@ -2,7 +2,14 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Loader2, Shield, Send, CheckCircle, Wallet } from 'lucide-react'
+import {
+  Loader2,
+  Shield,
+  Send,
+  CheckCircle,
+  Wallet,
+  AlertCircle,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PaywallConfig } from '@/types'
 import { useAccount, useWalletClient } from 'wagmi'
@@ -16,13 +23,19 @@ interface PaywallFormProps {
 
 export function PaywallForm({ config }: PaywallFormProps) {
   const [status, setStatus] = useState<
-    'idle' | 'submitting' | 'payment_required' | 'paying' | 'success'
+    | 'idle'
+    | 'moderating'
+    | 'submitting'
+    | 'payment_required'
+    | 'paying'
+    | 'success'
   >('idle')
   const [formData, setFormData] = useState({
     name: '',
     contact: '',
     message: '',
   })
+  const [moderationError, setModerationError] = useState<string>('')
 
   // Store the 402 response data to use for payment construction
   const [paymentRequirements, setPaymentRequirements] = useState<any>(null)
@@ -40,10 +53,42 @@ export function PaywallForm({ config }: PaywallFormProps) {
     if (status === 'submitting' || (status === 'paying' && !paymentProof))
       return
 
+    // Clear any previous moderation errors
+    setModerationError('')
+
+    // Step 1: AI Moderation Check (only on initial submit, not on payment retry)
     if (!paymentProof) {
+      setStatus('moderating')
+
+      try {
+        const moderationRes = await fetch('/api/paywall/moderate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: formData.message,
+            name: formData.name,
+            contact: formData.contact,
+          }),
+        })
+
+        const moderationData = await moderationRes.json()
+
+        if (!moderationData.isAppropriate) {
+          setModerationError(
+            moderationData.reason || '您的消息包含不当内容。请修改后重试。'
+          )
+          setStatus('idle')
+          return
+        }
+      } catch (error) {
+        console.error('Moderation check failed:', error)
+        // Continue with submission if moderation API fails
+      }
+
       setStatus('submitting')
     }
 
+    // Step 2: Actual Submission
     try {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
@@ -185,6 +230,21 @@ export function PaywallForm({ config }: PaywallFormProps) {
         )}
       >
         <form onSubmit={(e) => handleSubmit(e)} className="space-y-4">
+          {/* Moderation Error Message */}
+          {moderationError && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-start gap-2 p-4 bg-red-50 border border-red-200 rounded-lg"
+            >
+              <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-red-800">消息被拒绝</p>
+                <p className="text-sm text-red-600 mt-1">{moderationError}</p>
+              </div>
+            </motion.div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Your Name
@@ -232,15 +292,25 @@ export function PaywallForm({ config }: PaywallFormProps) {
           </div>
           <button
             type="submit"
-            disabled={status === 'submitting'}
-            className="w-full py-3 bg-black text-white rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors"
+            disabled={status === 'submitting' || status === 'moderating'}
+            className="w-full py-3 bg-black text-white rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {status === 'submitting' ? (
-              <Loader2 className="animate-spin" />
+            {status === 'moderating' ? (
+              <>
+                <Loader2 className="animate-spin" />
+                检查消息内容...
+              </>
+            ) : status === 'submitting' ? (
+              <>
+                <Loader2 className="animate-spin" />
+                发送中...
+              </>
             ) : (
-              <Send size={18} />
+              <>
+                <Send size={18} />
+                Send Message
+              </>
             )}
-            Send Message
           </button>
         </form>
       </div>
