@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft, TrendingUp, DollarSign, Zap } from 'lucide-react'
+import { ArrowLeft, TrendingUp, DollarSign, Zap, ArrowRight } from 'lucide-react'
 import { PaywallConfig } from '@/types'
 
 interface PaywallWithStats extends PaywallConfig {
@@ -172,13 +172,12 @@ export default function AdvertisePage() {
                 paywalls.map((paywall) => (
                   <div
                     key={paywall.id}
-                    className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-cyan-500/50 transition-all rounded-lg p-6 group cursor-pointer"
-                    onClick={() => router.push(`/c/${paywall.id}`)}
+                    className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-cyan-500/50 transition-all rounded-lg p-6 group"
                   >
                     <div className="flex items-start justify-between gap-4">
                       {/* Left: Title and ID */}
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+                        <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white transition-colors">
                           {paywall.title || paywall.id}
                         </h3>
                         {paywall.title && (
@@ -197,9 +196,9 @@ export default function AdvertisePage() {
                       <div className="flex items-start gap-6">
                         {/* Response Rate */}
                         <div
-                          className={`border rounded-lg px-4 py-3 text-center min-w-[120px] ${getResponseRateBg(paywall.responseRate)}`}
+                          className={`border rounded-lg px-4 py-3 text-center w-[120px] h-[96px] flex flex-col justify-between ${getResponseRateBg(paywall.responseRate)}`}
                         >
-                          <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
+                          <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                             响应率
                           </div>
                           <div
@@ -207,17 +206,20 @@ export default function AdvertisePage() {
                           >
                             {paywall.responseRate}%
                           </div>
+                          <div className="text-xs text-transparent">
+                            &nbsp;
+                          </div>
                         </div>
 
                         {/* Price */}
-                        <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg px-4 py-3 text-center min-w-[120px]">
-                          <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider mb-1">
+                        <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg px-4 py-3 text-center w-[120px] h-[96px] flex flex-col justify-between">
+                          <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
                             价格
                           </div>
                           <div className="text-2xl font-black text-cyan-600 dark:text-cyan-400">
                             ${paywall.price}
                           </div>
-                          <div className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                          <div className="text-xs text-zinc-500 dark:text-zinc-400">
                             {paywall.currency}
                           </div>
                         </div>
@@ -225,18 +227,29 @@ export default function AdvertisePage() {
                     </div>
 
                     {/* Footer */}
-                    <div className="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
-                      <span>
-                        创建者:{' '}
-                        {paywall.creatorAddress.slice(0, 6)}...
-                        {paywall.creatorAddress.slice(-4)}
-                      </span>
-                      {paywall.createdAt && (
-                        <span>
-                          创建时间:{' '}
-                          {new Date(paywall.createdAt).toLocaleDateString('zh-CN')}
+                    <div className="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                          创建者:{' '}
+                          {paywall.creatorAddress.slice(0, 6)}...
+                          {paywall.creatorAddress.slice(-4)}
                         </span>
-                      )}
+                        {paywall.createdAt && (
+                          <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                            创建时间:{' '}
+                            {new Date(paywall.createdAt).toLocaleDateString('zh-CN')}
+                          </span>
+                        )}
+                      </div>
+                      
+                      {/* Action Button */}
+                      <button
+                        onClick={() => router.push(`/c/${paywall.id}`)}
+                        className="cyber-button px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-sm font-black text-sm uppercase tracking-widest border-b-4 border-cyan-700 active:translate-y-1 active:border-b-0 transition-all flex items-center gap-2"
+                      >
+                        立即投放
+                        <ArrowRight size={16} />
+                      </button>
                     </div>
                   </div>
                 ))
