@@ -163,24 +163,6 @@ export function PaywallForm({ config }: PaywallFormProps) {
           Your message has been delivered to the creator.
         </p>
 
-        {/* Creator Contact Email */}
-        <div className="mt-6 w-full bg-white p-4 rounded-xl border border-green-200">
-          <div className="text-sm text-gray-500 mb-1 text-center">
-            Creator Contact
-          </div>
-          <div className="text-center">
-            <a
-              href={`mailto:${config.email}`}
-              className="text-green-700 font-semibold hover:text-green-800 transition-colors hover:underline"
-            >
-              {config.email}
-            </a>
-          </div>
-          <p className="text-xs text-gray-500 mt-2 text-center">
-            You can reach out via email for further discussion.
-          </p>
-        </div>
-
         <button
           onClick={() => window.location.reload()}
           className="mt-6 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
@@ -276,9 +258,6 @@ export function PaywallForm({ config }: PaywallFormProps) {
               <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Shield size={24} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Gatekeeper Active
-              </h3>
               <p className="text-gray-500 text-sm mb-6">
                 This creator requires a small payment to verify serious
                 inquiries.
