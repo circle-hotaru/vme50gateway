@@ -133,3 +133,38 @@ export async function listPaywallsByCreator(
 
   return (data || []).map(mapPaywall)
 }
+
+export async function listSubmissionsByCreator(
+  creatorAddress: string
+): Promise<Submission[]> {
+  const supabase = createAdminClient()
+
+  // First get all paywalls created by this creator
+  const { data: paywalls, error: paywallError } = await supabase
+    .from('paywalls')
+    .select('id')
+    .eq('creator_address', creatorAddress)
+
+  if (paywallError) {
+    throw paywallError
+  }
+
+  if (!paywalls || paywalls.length === 0) {
+    return []
+  }
+
+  const paywallIds = paywalls.map((p) => p.id)
+
+  // Then get all submissions for those paywalls
+  const { data, error } = await supabase
+    .from('submissions')
+    .select('*')
+    .in('paywall_id', paywallIds)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    throw error
+  }
+
+  return (data || []).map(mapSubmission)
+}

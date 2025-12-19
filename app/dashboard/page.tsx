@@ -1,12 +1,21 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Wallet, Link as LinkIcon, Copy, ArrowRight, Zap } from 'lucide-react'
+import {
+  Wallet,
+  Link as LinkIcon,
+  Copy,
+  ArrowRight,
+  Zap,
+  Inbox,
+  Mail,
+  MailOpen,
+} from 'lucide-react'
 import { useAccount } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { APP_CONFIG } from '@/lib/app-config'
 import { LinkDetailModal } from '@/components/link-detail-modal'
-import { PaywallConfig } from '@/types'
+import { PaywallConfig, Submission } from '@/types'
 
 export default function DashboardPage() {
   const { address, isConnected } = useAccount()
@@ -20,6 +29,9 @@ export default function DashboardPage() {
   const [isCreating, setIsCreating] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [selectedLink, setSelectedLink] = useState<PaywallConfig | null>(null)
+  const [inbox, setInbox] = useState<Submission[]>([])
+  const [isLoadingInbox, setIsLoadingInbox] = useState(false)
+  const [activeTab, setActiveTab] = useState<'links' | 'inbox'>('links')
 
   const fetchLinks = useCallback(async () => {
     if (!address) return
@@ -38,14 +50,33 @@ export default function DashboardPage() {
     }
   }, [address])
 
-  // Fetch links when address changes
+  const fetchInbox = useCallback(async () => {
+    if (!address) return
+
+    setIsLoadingInbox(true)
+    try {
+      const res = await fetch(`/api/paywall/inbox?creatorAddress=${address}`)
+      const data = await res.json()
+      if (data.success) {
+        setInbox(data.data)
+      }
+    } catch (err) {
+      console.error('Failed to fetch inbox:', err)
+    } finally {
+      setIsLoadingInbox(false)
+    }
+  }, [address])
+
+  // Fetch links and inbox when address changes
   useEffect(() => {
     if (address) {
       fetchLinks()
+      fetchInbox()
     } else {
       setCreatedLinks([])
+      setInbox([])
     }
-  }, [address, fetchLinks])
+  }, [address, fetchLinks, fetchInbox])
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -111,123 +142,278 @@ export default function DashboardPage() {
       </header>
 
       <main className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {/* Create Form */}
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">
-                Create New Link
-              </h2>
-              <p className="text-gray-500">Set your price and start sharing.</p>
+        {/* Tab Navigation */}
+        <div className="flex items-center gap-4 mb-8 border-b border-gray-200">
+          <button
+            onClick={() => setActiveTab('links')}
+            className={`pb-4 px-2 font-medium transition-colors relative ${
+              activeTab === 'links'
+                ? 'text-blue-600'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <LinkIcon size={18} />
+              <span>My Links</span>
+              {createdLinks.length > 0 && (
+                <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
+                  {createdLinks.length}
+                </span>
+              )}
             </div>
-            <form
-              onSubmit={handleCreate}
-              className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4"
-            >
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Contact Email
-                </label>
-                <input
-                  required
-                  type="email"
-                  placeholder="your@email.com"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Price (Fixed for Demo)
-                </label>
-                <input
-                  disabled
-                  type="number"
-                  value={formData.price}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none bg-gray-100 text-gray-500 cursor-not-allowed"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={isCreating}
-                className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isCreating ? 'Creating...' : 'Generate Link'}{' '}
-                <ArrowRight size={16} />
-              </button>
-            </form>
-          </div>
+            {activeTab === 'links' && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('inbox')}
+            className={`pb-4 px-2 font-medium transition-colors relative ${
+              activeTab === 'inbox'
+                ? 'text-blue-600'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <Inbox size={18} />
+              <span>Inbox</span>
+              {inbox.length > 0 && (
+                <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full">
+                  {inbox.length}
+                </span>
+              )}
+            </div>
+            {activeTab === 'inbox' && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
+            )}
+          </button>
+        </div>
 
-          {/* Links List */}
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">Your Links</h2>
-              <p className="text-gray-500">
-                Share these links to receive paid messages.
-              </p>
+        {/* Links Tab Content */}
+        {activeTab === 'links' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* Create Form */}
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Create New Link
+                </h2>
+                <p className="text-gray-500">
+                  Set your price and start sharing.
+                </p>
+              </div>
+              <form
+                onSubmit={handleCreate}
+                className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-4"
+              >
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Contact Email
+                  </label>
+                  <input
+                    required
+                    type="email"
+                    placeholder="your@email.com"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    className="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Price (Fixed for Demo)
+                  </label>
+                  <input
+                    disabled
+                    type="number"
+                    value={formData.price}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-200 outline-none bg-gray-100 text-gray-500 cursor-not-allowed"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isCreating}
+                  className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isCreating ? 'Creating...' : 'Generate Link'}{' '}
+                  <ArrowRight size={16} />
+                </button>
+              </form>
             </div>
+
+            {/* Links List */}
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Your Links</h2>
+                <p className="text-gray-500">
+                  Share these links to receive paid messages.
+                </p>
+              </div>
+              <div className="space-y-4">
+                {isLoading ? (
+                  <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center">
+                    <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-gray-400">Loading your links...</p>
+                  </div>
+                ) : (
+                  <>
+                    {createdLinks.map((link) => (
+                      <div
+                        key={link.id}
+                        className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 group hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex justify-between items-start mb-4">
+                          <button
+                            onClick={() => setSelectedLink(link)}
+                            className="text-left flex-1 hover:opacity-80 transition-opacity"
+                          >
+                            <h3 className="font-bold text-lg hover:text-blue-600 transition-colors">
+                              {link.email}
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                              {link.price} {link.currency}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-1">
+                              Click to view details
+                            </p>
+                          </button>
+                          <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                            Active
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                          <LinkIcon size={14} className="text-gray-400" />
+                          <span className="text-sm font-mono text-gray-600 truncate flex-1 block">
+                            {typeof window !== 'undefined'
+                              ? `${window.location.origin}/c/${link.id}`
+                              : `/c/${link.id}`}
+                          </span>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(
+                                `${window.location.origin}/c/${link.id}`
+                              )
+                              alert('Copied to clipboard!')
+                            }}
+                            className="text-gray-400 hover:text-black transition-colors p-1 hover:bg-gray-200 rounded"
+                            title="Copy link"
+                          >
+                            <Copy size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    {createdLinks.length === 0 && !isLoading && (
+                      <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center">
+                        <LinkIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                        <p className="text-gray-400">
+                          No links yet. Create your first one!
+                        </p>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Inbox Tab Content */}
+        {activeTab === 'inbox' && (
+          <div className="max-w-4xl mx-auto space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Your Inbox</h2>
+                <p className="text-gray-500 mt-1">
+                  Messages from people who paid to contact you
+                </p>
+              </div>
+              {inbox.length > 0 && (
+                <span className="px-4 py-2 bg-purple-50 text-purple-700 text-sm font-medium rounded-full">
+                  {inbox.length} {inbox.length === 1 ? 'message' : 'messages'}
+                </span>
+              )}
+            </div>
+
             <div className="space-y-4">
-              {isLoading ? (
+              {isLoadingInbox ? (
                 <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center">
-                  <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <p className="text-gray-400">Loading your links...</p>
+                  <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="text-gray-400">Loading your inbox...</p>
                 </div>
               ) : (
                 <>
-                  {createdLinks.map((link) => (
+                  {inbox.map((submission) => (
                     <div
-                      key={link.id}
-                      className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 group hover:shadow-md transition-shadow"
+                      key={submission.id}
+                      className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
                     >
-                      <div className="flex justify-between items-start mb-4">
-                        <button
-                          onClick={() => setSelectedLink(link)}
-                          className="text-left flex-1 hover:opacity-80 transition-opacity"
-                        >
-                          <h3 className="font-bold text-lg hover:text-blue-600 transition-colors">
-                            {link.email}
-                          </h3>
-                          <p className="text-sm text-gray-500">
-                            {link.price} {link.currency}
-                          </p>
-                          <p className="text-xs text-gray-400 mt-1">
-                            Click to view details
-                          </p>
-                        </button>
-                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                          Active
-                        </span>
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-start gap-3 flex-1">
+                          <div className="w-12 h-12 bg-linear-to-br from-blue-50 to-purple-50 rounded-full flex items-center justify-center shrink-0">
+                            <MailOpen className="text-blue-600" size={20} />
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-lg text-gray-900">
+                              {submission.name || 'Anonymous'}
+                            </h3>
+                            <p className="text-sm text-gray-600">
+                              {submission.contact}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-xs text-gray-400 block">
+                            {new Date(submission.timestamp).toLocaleDateString(
+                              'en-US',
+                              {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                              }
+                            )}
+                          </span>
+                          <span className="text-xs text-gray-400">
+                            {new Date(submission.timestamp).toLocaleTimeString(
+                              'en-US',
+                              {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              }
+                            )}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                        <LinkIcon size={14} className="text-gray-400" />
-                        <span className="text-sm font-mono text-gray-600 truncate flex-1 block">
-                          {typeof window !== 'undefined'
-                            ? `${window.location.origin}/c/${link.id}`
-                            : `/c/${link.id}`}
-                        </span>
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(
-                              `${window.location.origin}/c/${link.id}`
-                            )
-                            alert('Copied to clipboard!')
-                          }}
-                          className="text-gray-400 hover:text-black transition-colors p-1 hover:bg-gray-200 rounded"
-                          title="Copy link"
-                        >
-                          <Copy size={16} />
-                        </button>
+                      <div className="pl-15 space-y-3">
+                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                          <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+                            {submission.message}
+                          </p>
+                        </div>
+                        {submission.txHash && (
+                          <div className="flex items-center gap-2 text-xs">
+                            <span className="text-gray-400">
+                              Transaction Hash:
+                            </span>
+                            <code className="font-mono text-gray-600 bg-gray-50 px-2 py-1 rounded">
+                              {submission.txHash.slice(0, 10)}...
+                              {submission.txHash.slice(-8)}
+                            </code>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
-                  {createdLinks.length === 0 && !isLoading && (
-                    <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center">
-                      <LinkIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                      <p className="text-gray-400">
-                        No links yet. Create your first one!
+                  {inbox.length === 0 && !isLoadingInbox && (
+                    <div className="bg-white p-16 rounded-2xl border border-dashed border-gray-200 text-center">
+                      <Mail className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        No messages yet
+                      </h3>
+                      <p className="text-gray-400 max-w-sm mx-auto">
+                        Share your links to start receiving paid inquiries from
+                        interested people!
                       </p>
                     </div>
                   )}
@@ -235,7 +421,7 @@ export default function DashboardPage() {
               )}
             </div>
           </div>
-        </div>
+        )}
       </main>
 
       {/* Link Detail Modal */}
