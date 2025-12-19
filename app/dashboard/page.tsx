@@ -1,21 +1,51 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Wallet, Link as LinkIcon, Copy, ArrowRight, Zap } from 'lucide-react'
 import { useAccount } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { APP_CONFIG } from '@/lib/app-config'
+import { LinkDetailModal } from '@/components/link-detail-modal'
+import { PaywallConfig } from '@/types'
 
 export default function DashboardPage() {
   const { address, isConnected } = useAccount()
 
-  const [createdLinks, setCreatedLinks] = useState<any[]>([])
+  const [createdLinks, setCreatedLinks] = useState<PaywallConfig[]>([])
   const [formData, setFormData] = useState({
     email: '',
     price: APP_CONFIG.DEFAULT_PRICE,
     description: '',
   })
   const [isCreating, setIsCreating] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [selectedLink, setSelectedLink] = useState<PaywallConfig | null>(null)
+
+  const fetchLinks = useCallback(async () => {
+    if (!address) return
+
+    setIsLoading(true)
+    try {
+      const res = await fetch(`/api/paywall/list?creatorAddress=${address}`)
+      const data = await res.json()
+      if (data.success) {
+        setCreatedLinks(data.data)
+      }
+    } catch (err) {
+      console.error('Failed to fetch links:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [address])
+
+  // Fetch links when address changes
+  useEffect(() => {
+    if (address) {
+      fetchLinks()
+    } else {
+      setCreatedLinks([])
+    }
+  }, [address, fetchLinks])
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -140,56 +170,82 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="space-y-4">
-              {createdLinks.map((link) => (
-                <div
-                  key={link.id}
-                  className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 group hover:shadow-md transition-shadow"
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h3 className="font-bold text-lg">{link.email}</h3>
-                      <p className="text-sm text-gray-500">
-                        {link.price} {link.currency}
+              {isLoading ? (
+                <div className="bg-white p-12 rounded-2xl border border-gray-200 text-center">
+                  <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="text-gray-400">Loading your links...</p>
+                </div>
+              ) : (
+                <>
+                  {createdLinks.map((link) => (
+                    <div
+                      key={link.id}
+                      className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 group hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex justify-between items-start mb-4">
+                        <button
+                          onClick={() => setSelectedLink(link)}
+                          className="text-left flex-1 hover:opacity-80 transition-opacity"
+                        >
+                          <h3 className="font-bold text-lg hover:text-blue-600 transition-colors">
+                            {link.email}
+                          </h3>
+                          <p className="text-sm text-gray-500">
+                            {link.price} {link.currency}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            Click to view details
+                          </p>
+                        </button>
+                        <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                          Active
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                        <LinkIcon size={14} className="text-gray-400" />
+                        <span className="text-sm font-mono text-gray-600 truncate flex-1 block">
+                          {typeof window !== 'undefined'
+                            ? `${window.location.origin}/c/${link.id}`
+                            : `/c/${link.id}`}
+                        </span>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(
+                              `${window.location.origin}/c/${link.id}`
+                            )
+                            alert('Copied to clipboard!')
+                          }}
+                          className="text-gray-400 hover:text-black transition-colors p-1 hover:bg-gray-200 rounded"
+                          title="Copy link"
+                        >
+                          <Copy size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {createdLinks.length === 0 && !isLoading && (
+                    <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center">
+                      <LinkIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                      <p className="text-gray-400">
+                        No links yet. Create your first one!
                       </p>
                     </div>
-                    <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                      Active
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                    <LinkIcon size={14} className="text-gray-400" />
-                    <span className="text-sm font-mono text-gray-600 truncate flex-1 block">
-                      {typeof window !== 'undefined'
-                        ? `${window.location.origin}/c/${link.id}`
-                        : `/c/${link.id}`}
-                    </span>
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(
-                          `${window.location.origin}/c/${link.id}`
-                        )
-                        alert('Copied to clipboard!')
-                      }}
-                      className="text-gray-400 hover:text-black transition-colors p-1 hover:bg-gray-200 rounded"
-                      title="Copy link"
-                    >
-                      <Copy size={16} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-              {createdLinks.length === 0 && (
-                <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-200 text-center">
-                  <LinkIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <p className="text-gray-400">
-                    No links yet. Create your first one!
-                  </p>
-                </div>
+                  )}
+                </>
               )}
             </div>
           </div>
         </div>
       </main>
+
+      {/* Link Detail Modal */}
+      {selectedLink && (
+        <LinkDetailModal
+          link={selectedLink}
+          isOpen={!!selectedLink}
+          onClose={() => setSelectedLink(null)}
+        />
+      )}
     </div>
   )
 }

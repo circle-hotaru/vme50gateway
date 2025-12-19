@@ -116,3 +116,20 @@ export async function listSubmissions(): Promise<Submission[]> {
 
   return (data || []).map(mapSubmission)
 }
+
+export async function listPaywallsByCreator(
+  creatorAddress: string
+): Promise<PaywallConfig[]> {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase
+    .from('paywalls')
+    .select('*')
+    .eq('creator_address', creatorAddress)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    throw error
+  }
+
+  return (data || []).map(mapPaywall)
+}
