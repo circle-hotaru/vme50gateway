@@ -6,6 +6,7 @@ import { Loader2, Shield, Send, CheckCircle, Wallet } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PaywallConfig } from '@/types'
 import { useAccount, useWalletClient } from 'wagmi'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { createPaymentHeader, selectPaymentRequirements } from 'x402/client'
 import { APP_CONFIG } from '@/lib/app-config'
 
@@ -150,7 +151,7 @@ export function PaywallForm({ config }: PaywallFormProps) {
 
   if (status === 'success') {
     return (
-      <div className="flex flex-col items-center justify-center p-8 bg-green-50 rounded-xl border border-green-200">
+      <div className="flex flex-col items-center justify-center p-8 bg-green-50 rounded-xl border border-green-200 max-w-md mx-auto">
         <motion.div
           initial={{ scale: 0.5, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -161,11 +162,30 @@ export function PaywallForm({ config }: PaywallFormProps) {
         <p className="text-green-600 mt-2 text-center">
           Your message has been delivered to the creator.
         </p>
+
+        {/* Creator Contact Email */}
+        <div className="mt-6 w-full bg-white p-4 rounded-xl border border-green-200">
+          <div className="text-sm text-gray-500 mb-1 text-center">
+            Creator Contact
+          </div>
+          <div className="text-center">
+            <a
+              href={`mailto:${config.email}`}
+              className="text-green-700 font-semibold hover:text-green-800 transition-colors hover:underline"
+            >
+              {config.email}
+            </a>
+          </div>
+          <p className="text-xs text-gray-500 mt-2 text-center">
+            You can reach out via email for further discussion.
+          </p>
+        </div>
+
         <button
           onClick={() => window.location.reload()}
-          className="mt-6 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700"
+          className="mt-6 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
         >
-          Send Another
+          Send Another Message
         </button>
       </div>
     )
@@ -271,26 +291,40 @@ export function PaywallForm({ config }: PaywallFormProps) {
                 </div>
               </div>
 
-              <button
-                onClick={handlePay}
-                disabled={status === 'paying'}
-                className="w-full py-3 bg-blue-600 text-white rounded-lg font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all"
-              >
-                {status === 'paying' ? (
-                  <>
-                    Sign & Pay
-                    <Loader2 className="animate-spin" />
-                  </>
-                ) : (
-                  <>
-                    Pay {config.price} {config.currency} <Wallet size={18} />
-                  </>
-                )}
-              </button>
-              {status === 'paying' && (
-                <p className="text-xs text-gray-400 mt-3 animate-pulse">
-                  Constructing & Confirming Payment...
-                </p>
+              {!isConnected ? (
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-500 text-center">
+                    Please connect your wallet to proceed with payment
+                  </p>
+                  <div className="flex justify-center">
+                    <ConnectButton />
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={handlePay}
+                    disabled={status === 'paying'}
+                    className="w-full py-3 bg-blue-600 text-white rounded-lg font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {status === 'paying' ? (
+                      <>
+                        Sign & Pay
+                        <Loader2 className="animate-spin" />
+                      </>
+                    ) : (
+                      <>
+                        Pay {config.price} {config.currency}{' '}
+                        <Wallet size={18} />
+                      </>
+                    )}
+                  </button>
+                  {status === 'paying' && (
+                    <p className="text-xs text-gray-400 mt-3 animate-pulse">
+                      Constructing & Confirming Payment...
+                    </p>
+                  )}
+                </>
               )}
             </div>
           </motion.div>
