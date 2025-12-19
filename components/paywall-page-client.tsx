@@ -1,9 +1,10 @@
 'use client'
 
+import Link from 'next/link'
 import { PaywallForm } from '@/components/paywall-form'
 import { PaywallConfig } from '@/types'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { Zap } from 'lucide-react'
+import { Shield } from 'lucide-react'
 
 interface PaywallPageClientProps {
   config: PaywallConfig
@@ -14,12 +15,17 @@ export function PaywallPageClient({ config }: PaywallPageClientProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Header with Connect Button */}
       <header className="flex justify-between items-center p-6 max-w-5xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
-            <Zap size={18} />
+        <Link
+          href="/"
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
+        >
+          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold">
+            <Shield size={18} />
           </div>
-          <span className="font-bold text-xl tracking-tight">x402 Gateway</span>
-        </div>
+          <span className="font-bold text-xl tracking-tight">
+            V ME 50 OR BE GONE
+          </span>
+        </Link>
         <ConnectButton showBalance={false} accountStatus="address" />
       </header>
 

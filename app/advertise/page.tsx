@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
-  ArrowLeft,
   TrendingUp,
   DollarSign,
   Zap,
@@ -11,6 +11,7 @@ import {
   Wallet,
   History,
   ExternalLink,
+  Shield,
 } from 'lucide-react'
 import { PaywallConfig, Submission } from '@/types'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
@@ -111,29 +112,19 @@ export default function AdvertisePage() {
 
       <nav className="fixed top-0 left-0 right-0 z-40 bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-cyan-500/20">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <button
-            onClick={() => router.push('/')}
-            className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 transition-colors"
+          <Link
+            href="/"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
           >
-            <ArrowLeft size={20} />
-            <span className="font-bold">返回</span>
-          </button>
+            <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold">
+              <Shield size={18} />
+            </div>
+            <span className="font-bold text-xl tracking-tight text-gray-900 dark:text-gray-100">
+              V ME 50 OR BE GONE
+            </span>
+          </Link>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-cyan-500/10 border-2 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-black flex items-center justify-center text-xl -skew-x-12 shadow-[0_0_15px_rgba(0,255,255,0.2)]">
-                V
-              </div>
-              <div className="flex flex-col text-left">
-                <span className="font-bold text-lg tracking-tighter text-slate-900 dark:text-white">
-                  投流中心
-                </span>
-                <span className="text-[8px] font-black text-cyan-600 dark:text-cyan-500 uppercase tracking-widest">
-                  ADVERTISE_HUB
-                </span>
-              </div>
-            </div>
-
             {/* Wallet Connect Button */}
             <ConnectButton />
           </div>

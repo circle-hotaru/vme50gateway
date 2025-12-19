@@ -241,7 +241,7 @@ export default function Home() {
 
           <div className="max-w-4xl relative z-10">
             <h1 className="text-7xl md:text-9xl font-black mb-6 tracking-tighter leading-none heading-font text-slate-900 dark:text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-              V 我 50 <br />
+              V ME 50 <br />
               <span className="text-cyan-600 dark:text-cyan-400 neon-text-cyan">
                 OR BE GONE.
               </span>
@@ -258,7 +258,7 @@ export default function Home() {
                 onClick={() => router.push('/dashboard')}
                 className="cyber-button px-14 py-6 text-white dark:text-black rounded-none font-black text-xl uppercase tracking-widest border-b-8 border-cyan-800 active:translate-y-2 active:border-b-0 heading-font"
               >
-                DEPLOY_SHIELD
+                DEPLOY SHIELD
               </button>
               <button
                 onClick={() => router.push('/advertise')}

@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Link from 'next/link'
 import {
   Wallet,
   Link as LinkIcon,
   Copy,
   ArrowRight,
-  Zap,
+  Shield,
   Inbox,
   Mail,
   MailOpen,
@@ -128,7 +129,9 @@ export default function DashboardPage() {
             <Wallet size={32} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Connect Wallet</h1>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              Connect Wallet
+            </h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2">
               Please connect your wallet to access your creator dashboard.
             </p>
@@ -144,14 +147,17 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black text-gray-900 dark:text-gray-100 p-6 md:p-12 transition-colors">
       <header className="flex justify-between items-center mb-12 max-w-5xl mx-auto">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
-            <Zap size={18} />
+        <Link
+          href="/"
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
+        >
+          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold">
+            <Shield size={18} />
           </div>
           <span className="font-bold text-xl tracking-tight text-gray-900 dark:text-gray-100">
-            x402 Gateway
+            V ME 50 OR BE GONE
           </span>
-        </div>
+        </Link>
         <ConnectButton showBalance={false} accountStatus="address" />
       </header>
 
@@ -311,7 +317,9 @@ export default function DashboardPage() {
             {/* Links List */}
             <div className="space-y-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Your Links</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  Your Links
+                </h2>
                 <p className="text-gray-500 dark:text-gray-400">
                   Share these links to receive paid messages.
                 </p>
@@ -320,7 +328,9 @@ export default function DashboardPage() {
                 {isLoading ? (
                   <div className="bg-white dark:bg-zinc-900 p-12 rounded-2xl border border-gray-200 dark:border-zinc-800 text-center transition-colors">
                     <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-400 dark:text-gray-500">Loading your links...</p>
+                    <p className="text-gray-400 dark:text-gray-500">
+                      Loading your links...
+                    </p>
                   </div>
                 ) : (
                   <>
@@ -354,7 +364,10 @@ export default function DashboardPage() {
                           </span>
                         </div>
                         <div className="flex items-center gap-2 bg-gray-50 dark:bg-black/30 p-3 rounded-lg border border-gray-100 dark:border-zinc-800">
-                          <LinkIcon size={14} className="text-gray-400 dark:text-gray-500" />
+                          <LinkIcon
+                            size={14}
+                            className="text-gray-400 dark:text-gray-500"
+                          />
                           <span className="text-sm font-mono text-gray-600 dark:text-gray-200 truncate flex-1 block">
                             {typeof window !== 'undefined'
                               ? `${window.location.origin}/c/${link.id}`
@@ -377,7 +390,9 @@ export default function DashboardPage() {
                           >
                             {copiedId === link.id ? (
                               <>
-                                <span className="text-xs font-bold">复制成功</span>
+                                <span className="text-xs font-bold">
+                                  复制成功
+                                </span>
                                 <Check size={14} />
                               </>
                             ) : (
@@ -407,7 +422,9 @@ export default function DashboardPage() {
           <div className="max-w-4xl mx-auto space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Your Inbox</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                  Your Inbox
+                </h2>
                 <p className="text-gray-500 dark:text-gray-400 mt-1">
                   Messages from people who paid to contact you
                 </p>
@@ -444,7 +461,9 @@ export default function DashboardPage() {
               {isLoadingInbox ? (
                 <div className="bg-white dark:bg-zinc-900 p-12 rounded-2xl border border-gray-200 dark:border-zinc-800 text-center transition-colors">
                   <div className="w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <p className="text-gray-400 dark:text-gray-500">Loading your inbox...</p>
+                  <p className="text-gray-400 dark:text-gray-500">
+                    Loading your inbox...
+                  </p>
                 </div>
               ) : (
                 <>
@@ -456,7 +475,10 @@ export default function DashboardPage() {
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-start gap-3 flex-1">
                           <div className="w-12 h-12 bg-linear-to-br from-blue-50 to-purple-50 dark:from-blue-900/50 dark:to-purple-900/50 rounded-full flex items-center justify-center shrink-0">
-                            <MailOpen className="text-blue-600 dark:text-blue-300" size={20} />
+                            <MailOpen
+                              className="text-blue-600 dark:text-blue-300"
+                              size={20}
+                            />
                           </div>
                           <div className="flex-1">
                             <h3 className="font-semibold text-lg text-gray-900 dark:text-gray-100">
