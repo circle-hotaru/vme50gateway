@@ -174,6 +174,20 @@ export async function listSubmissionsByCreator(
   return (data || []).map(mapSubmission)
 }
 
+export async function listAllPaywalls(): Promise<PaywallConfig[]> {
+  const supabase = createAdminClient()
+  const { data, error } = await supabase
+    .from('paywalls')
+    .select('*')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    throw error
+  }
+
+  return (data || []).map(mapPaywall)
+}
+
 export async function getTotalReceivedByCreator(
   creatorAddress: string
 ): Promise<Record<string, string>> {

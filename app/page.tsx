@@ -260,6 +260,12 @@ export default function Home() {
               >
                 {user.isConnected ? 'ENTER_COMMAND_CENTER' : 'DEPLOY_SHIELD'}
               </button>
+              <button
+                onClick={() => router.push('/advertise')}
+                className="px-14 py-6 bg-transparent border-4 border-cyan-500 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500 hover:text-white dark:hover:text-black rounded-none font-black text-xl uppercase tracking-widest transition-all active:translate-y-2 heading-font"
+              >
+                投流中心
+              </button>
             </div>
           </div>
         </section>
