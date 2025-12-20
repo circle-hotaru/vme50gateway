@@ -293,22 +293,22 @@ export function PaywallForm({ config }: PaywallFormProps) {
           <button
             type="submit"
             disabled={status === 'submitting' || status === 'moderating'}
-            className="w-full py-3 bg-black text-white rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center space-x-2 bg-cyan-500 hover:bg-cyan-400 text-white py-3 px-4 rounded-md shadow-[0_0_15px_rgba(6,182,212,0.5)] hover:shadow-[0_0_25px_rgba(6,182,212,0.8)] transition-all duration-300 border border-cyan-300/50 font-bold disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-cyan-500 disabled:hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]"
           >
             {status === 'moderating' ? (
               <>
                 <Loader2 className="animate-spin" />
-                检查消息内容...
+                <span>检查消息内容...</span>
               </>
             ) : status === 'submitting' ? (
               <>
                 <Loader2 className="animate-spin" />
-                发送中...
+                <span>发送中...</span>
               </>
             ) : (
               <>
-                <Send size={18} />
-                Send Message
+                <Send size={18} className="fill-white" />
+                <span>Send Message</span>
               </>
             )}
           </button>

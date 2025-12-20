@@ -9,6 +9,7 @@ import {
   AlertTriangle,
   Sun,
   Moon,
+  Zap,
 } from 'lucide-react'
 
 const THREAT_KEYWORDS = [
@@ -159,8 +160,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-4 group">
             <div className="relative">
-              <div className="w-10 h-10 bg-cyan-500/10 border-2 border-cyan-500 text-cyan-600 dark:text-cyan-400 font-black flex items-center justify-center text-xl skew-x-[-12deg] shadow-[0_0_15px_rgba(0,255,255,0.2)]">
-                V
+              <div className="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]">
+                <Zap size={20} className="fill-white" />
               </div>
             </div>
             <div className="flex flex-col text-left">
@@ -256,15 +257,27 @@ export default function Home() {
             <div className="flex flex-wrap justify-center gap-6">
               <button
                 onClick={() => router.push('/dashboard')}
-                className="cyber-button px-14 py-6 text-white dark:text-black rounded-none font-black text-xl uppercase tracking-widest border-b-8 border-cyan-800 active:translate-y-2 active:border-b-0 heading-font"
+                className="group flex items-center justify-center space-x-3 bg-cyan-500 hover:bg-cyan-400 text-white py-4 px-10 rounded-md shadow-[0_0_15px_rgba(6,182,212,0.5)] hover:shadow-[0_0_25px_rgba(6,182,212,0.8)] transition-all duration-300 border border-cyan-300/50 heading-font"
               >
-                DEPLOY SHIELD
+                <Zap
+                  size={20}
+                  className="fill-white group-hover:scale-110 transition-transform duration-300"
+                />
+                <span className="font-bold text-lg tracking-wide uppercase italic">
+                  DEPLOY SHIELD
+                </span>
               </button>
               <button
                 onClick={() => router.push('/advertise')}
-                className="px-14 py-6 bg-transparent border-4 border-cyan-500 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500 hover:text-white dark:hover:text-black rounded-none font-black text-xl uppercase tracking-widest transition-all active:translate-y-2 heading-font"
+                className="group flex items-center justify-center space-x-3 bg-transparent hover:bg-cyan-500/10 dark:hover:bg-cyan-400/10 text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 py-4 px-10 rounded-md shadow-[0_0_10px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.6)] transition-all duration-300 border-2 border-cyan-500/50 dark:border-cyan-400/50 hover:border-cyan-500 dark:hover:border-cyan-400 heading-font"
               >
-                ADVERTISE HUB
+                <Activity
+                  size={20}
+                  className="group-hover:scale-110 transition-transform duration-300"
+                />
+                <span className="font-bold text-lg tracking-wide uppercase italic">
+                  ADVERTISE HUB
+                </span>
               </button>
             </div>
           </div>

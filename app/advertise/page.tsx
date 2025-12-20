@@ -116,8 +116,8 @@ export default function AdvertisePage() {
             href="/"
             className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
           >
-            <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold">
-              <Shield size={18} />
+            <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]">
+              <Zap size={18} className="fill-white" />
             </div>
             <span className="font-bold text-xl tracking-tight text-gray-900 dark:text-gray-100">
               V ME 50 OR BE GONE
@@ -454,10 +454,10 @@ export default function AdvertisePage() {
                           {/* Action Button */}
                           <button
                             onClick={() => router.push(`/c/${paywall.id}`)}
-                            className="cyber-button px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-sm font-black text-sm uppercase tracking-widest border-b-4 border-cyan-700 active:translate-y-1 active:border-b-0 transition-all flex items-center gap-2"
+                            className="flex items-center justify-center space-x-2 bg-cyan-500 hover:bg-cyan-400 text-white py-3 px-8 rounded-md shadow-[0_0_15px_rgba(6,182,212,0.5)] hover:shadow-[0_0_25px_rgba(6,182,212,0.8)] transition-all duration-300 border border-cyan-300/50 font-bold text-sm uppercase tracking-wide"
                           >
-                            立即投放
-                            <ArrowRight size={16} />
+                            <span>立即投放</span>
+                            <ArrowRight size={16} className="fill-white" />
                           </button>
                         </div>
                       </div>

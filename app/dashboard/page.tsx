@@ -7,11 +7,11 @@ import {
   Link as LinkIcon,
   Copy,
   ArrowRight,
-  Shield,
   Inbox,
   Mail,
   MailOpen,
   Check,
+  Zap,
 } from 'lucide-react'
 import { useAccount } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
@@ -151,8 +151,8 @@ export default function DashboardPage() {
           href="/"
           className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
         >
-          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold">
-            <Shield size={18} />
+          <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]">
+            <Zap size={18} className="fill-white" />
           </div>
           <span className="font-bold text-xl tracking-tight text-gray-900 dark:text-gray-100">
             V ME 50 OR BE GONE
@@ -306,10 +306,10 @@ export default function DashboardPage() {
                 <button
                   type="submit"
                   disabled={isCreating}
-                  className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center space-x-2 bg-cyan-500 hover:bg-cyan-400 text-white py-3 px-4 rounded-md shadow-[0_0_15px_rgba(6,182,212,0.5)] hover:shadow-[0_0_25px_rgba(6,182,212,0.8)] transition-all duration-300 border border-cyan-300/50 font-bold disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-cyan-500 disabled:hover:shadow-[0_0_15px_rgba(6,182,212,0.5)]"
                 >
-                  {isCreating ? 'Creating...' : 'Generate Link'}{' '}
-                  <ArrowRight size={16} />
+                  <span>{isCreating ? 'Creating...' : 'Generate Link'}</span>
+                  <ArrowRight size={16} className="fill-white" />
                 </button>
               </form>
             </div>

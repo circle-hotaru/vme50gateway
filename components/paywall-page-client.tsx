@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { PaywallForm } from '@/components/paywall-form'
 import { PaywallConfig } from '@/types'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { Shield } from 'lucide-react'
+import { Zap } from 'lucide-react'
 
 interface PaywallPageClientProps {
   config: PaywallConfig
@@ -19,8 +19,8 @@ export function PaywallPageClient({ config }: PaywallPageClientProps) {
           href="/"
           className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
         >
-          <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold">
-            <Shield size={18} />
+          <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center text-white shadow-[0_0_15px_rgba(6,182,212,0.5)]">
+            <Zap size={18} className="fill-white" />
           </div>
           <span className="font-bold text-xl tracking-tight">
             V ME 50 OR BE GONE
