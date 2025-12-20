@@ -11,7 +11,6 @@ import {
   Wallet,
   History,
   ExternalLink,
-  Shield,
 } from 'lucide-react'
 import { PaywallConfig, Submission } from '@/types'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
@@ -205,6 +204,39 @@ export default function AdvertisePage() {
                 <h2 className="text-2xl font-black text-slate-900 dark:text-white">
                   我的投放历史
                 </h2>
+              </div>
+
+              {/* Statistics Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {/* Read Value Card */}
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-2 border-blue-400/50 dark:border-blue-500/50 rounded-2xl p-6">
+                  <div className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-3 uppercase tracking-wider">
+                    已被阅读价值
+                  </div>
+                  <div className="text-5xl font-black text-blue-700 dark:text-blue-300">
+                    3,034 USDC
+                  </div>
+                </div>
+
+                {/* Unread Interest Value Card */}
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-2 border-blue-400/50 dark:border-blue-500/50 rounded-2xl p-6">
+                  <div className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-3 uppercase tracking-wider">
+                    未被阅读计息价值
+                  </div>
+                  <div className="text-5xl font-black text-blue-700 dark:text-blue-300">
+                    120,000 USDC
+                  </div>
+                </div>
+
+                {/* Cumulative Income Card - Full Width */}
+                <div className="md:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-2 border-blue-400/50 dark:border-blue-500/50 rounded-2xl p-6">
+                  <div className="text-sm font-bold text-blue-600 dark:text-blue-400 mb-3 uppercase tracking-wider">
+                    累计收益
+                  </div>
+                  <div className="text-5xl font-black text-blue-700 dark:text-blue-300">
+                    343.34 USDC
+                  </div>
+                </div>
               </div>
 
               {loadingSubmissions ? (
