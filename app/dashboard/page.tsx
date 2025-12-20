@@ -12,6 +12,7 @@ import {
   MailOpen,
   Check,
   Zap,
+  ExternalLink,
 } from 'lucide-react'
 import { useAccount } from 'wagmi'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
@@ -541,13 +542,18 @@ export default function DashboardPage() {
                         </div>
                         {submission.txHash && (
                           <div className="flex items-center gap-2 text-xs">
-                            <span className="text-gray-400 dark:text-gray-500">
-                              Transaction Hash:
-                            </span>
-                            <code className="font-mono text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-black/30 px-2 py-1 rounded border border-transparent dark:border-zinc-800">
-                              {submission.txHash.slice(0, 10)}...
-                              {submission.txHash.slice(-8)}
-                            </code>
+                            <a
+                              href={`https://sepolia.basescan.org/tx/${submission.txHash}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 font-mono text-cyan-600 dark:text-cyan-400 hover:text-cyan-700 dark:hover:text-cyan-300 bg-gray-50 dark:bg-black/30 px-2 py-1 rounded border border-transparent dark:border-zinc-800 hover:border-cyan-200 dark:hover:border-cyan-800 transition-colors"
+                            >
+                              <span>
+                                {submission.txHash.slice(0, 10)}...
+                                {submission.txHash.slice(-8)}
+                              </span>
+                              <ExternalLink size={12} />
+                            </a>
                           </div>
                         )}
                       </div>
